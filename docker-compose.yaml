@@ -1,0 +1,68 @@
+services:
+  router:
+    image: container-registry.oracle.com/mysql/community-router:latest
+    hostname: mysql.router
+    environment:
+      - MYSQL_HOST=mysql.server1
+      - MYSQL_PORT=3306
+      - MYSQL_USER=clusteradmin
+      - MYSQL_PASSWORD=admin
+      # - MYSQL_INNODB_CLUSTER_MEMBERS=3
+      - MYSQL_CREATE_ROUTER_USER=0  # reuse admin user
+      - MYSQ_LROUTER_BOOTSTRAP_EXTRA_OPTIONS="--conf-use-sockets --conf-use-gr-notifications"
+    ports:
+      - 6446:6446
+  
+  mysql.server1:
+    image: mysql:8.0.15
+    hostname: mysql.server1
+    container_name: mysql.server1
+    environment:
+      - MYSQL_DATABASE=lab
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    command: |
+      --server-id=1
+      --binlog_checksum=NONE
+      --enforce_gtid_consistency=ON
+      --gtid_mode=ON
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./.container/server1:/var/lib/mysql
+
+  mysql.server2:
+    image: mysql:8.0.15
+    hostname: mysql.server2
+    container_name: mysql.server2
+    environment:
+      - MYSQL_DATABASE=lab
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    command: |
+      --server-id=2
+      --binlog_checksum=NONE
+      --enforce_gtid_consistency=ON
+      --gtid_mode=ON
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./.container/server2:/var/lib/mysql
+
+  mysql.server3:
+    image: mysql:8.0.15
+    hostname: mysql.server3
+    container_name: mysql.server3
+    environment:
+      - MYSQL_DATABASE=lab
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
+    command: |
+      --server-id=3
+      --binlog_checksum=NONE
+      --enforce_gtid_consistency=ON
+      --gtid_mode=ON
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./.container/server3:/var/lib/mysql
