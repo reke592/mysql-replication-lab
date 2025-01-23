@@ -20,4 +20,4 @@ cluster = dba.getCluster();
 cluster.describe();
 ```
 
-3. reboot the mysql-router
+3. restart the mysql-router
